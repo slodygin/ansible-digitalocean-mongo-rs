@@ -1,0 +1,25 @@
+#4. prepearing droplets
+- hosts: do_droplets
+  gather_facts: no
+  become: no
+  roles:
+    - { role: python-raw }
+
+- hosts: do_droplets
+  become: no
+  gather_facts: true
+  tasks:
+    - name: Get local machine's IP address
+      set_fact:
+        local_machine_ip: "{{ ansible_env['SSH_CLIENT'].split() | first }}"
+      changed_when: false
+  vars:
+    - ansible_python_interpreter: /usr/bin/python3
+
+#6. install and configure mongodb
+- hosts: do_droplets
+  become: no
+  gather_facts: true
+  roles:
+    - mongodb
+

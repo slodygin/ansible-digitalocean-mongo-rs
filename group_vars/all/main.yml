@@ -1,0 +1,66 @@
+---
+droplet_name: test-droplet
+droplet_region_id: sgp1
+droplet_size_id: 512mb
+droplet_image_id: ubuntu-16-04-x64
+
+users:
+  - username: foobaring
+    name: Foo Baring
+    authorized_keys:
+      - "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+    shell: /bin/bash
+    password: '{% if user_acct_password is defined %}{{ user_acct_password | password_hash("sha512") }}{% else %}{{ None }}{% endif %}'
+    update_password: on_create
+    groups:
+      - sudo
+
+swapfile_size: 1GB
+swapfile_swappiness: 10
+swapfile_vfs_cache_pressure: 50
+
+ntp_timezone: Etc/UTC
+ntp_manage_config: true
+
+sshd:
+  PermitRootLogin: yes
+  PasswordAuthentication: no
+
+ufw_rules:
+  - ufw_default_input_policy: DROP
+  - ufw_default_output_policy: ACCEPT
+  - ufw_default_forward_policy: DROP
+  - { port: 22, rule: allow, from_ip: '91.122.169.233', comment: 'Allow to ssh from our ip1' }
+  - { port: 22, rule: allow, from_ip: '127.0.0.2', comment: 'Allow to ssh from our ip2' }
+  - { port: 22, rule: allow, from_ip: '127.0.0.2/8', comment: 'Allow to ssh from our network' }
+  - { port: 27017, rule: allow, from_ip: '91.122.169.233', comment: 'Allow to mongo from our ip1' }
+  - { port: 27017, rule: allow, from_ip: '127.0.0.2', comment: 'Allow to mongo from our ip2' }
+  - { port: 27017, rule: allow, from_ip: '127.0.0.2/8', comment: 'Allow to mongo from our network' }
+  - { from_ip: '127.0.0.1/8', comment: 'Allow localhost' }
+  - { from_ip: '127.0.42.0/24', rule: deny }
+ufw_reset: no
+ufw_logging: full
+
+
+mongodb_replication_replset: rp0                  # Enable replication <setname>[/<optionalseedhostlist>]
+mongodb_replication_replindexprefetch: "all"      # specify index prefetching behavior (if secondary) [none|_id_only|all]
+mongodb_replication_oplogsize: 1024               # specifies a maximum size in megabytes for the replication operation log
+mongodb_package: mongodb-org
+mongodb_version: "3.6"
+mongodb_security_authorization: "enabled"
+mongodb_set_parameters: { "enableLocalhostAuthBypass": "true", "authenticationMechanisms": "SCRAM-SHA-1,MONGODB-CR" }
+mongodb_user_admin_name: siteUserAdmin
+mongodb_user_admin_password: passw0rd
+mongodb_root_admin_name: siteRootAdmin
+mongodb_root_admin_password: passw0rd
+mongodb_net_bindip: 0.0.0.0
+mongodb_login_host: "{{ hostvars[groups['mongo_master'][0]].ansible_default_ipv4.address }}"
+
+mongodb_users:
+  - {
+    name: testUser,
+    password: passw0rd,
+    roles: readWrite,
+    database: admin
+  }
+

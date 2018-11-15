@@ -1,0 +1,7 @@
+- hosts: ubuntu1
+
+  roles:
+  - stouts.mongodb
+
+  vars:
+    mongodb_conf_port: 27400

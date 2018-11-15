@@ -1,0 +1,19 @@
+- hosts: mongo
+
+  roles:
+  - undergreen.mongodb
+
+  vars: 
+    mongodb_replication_replset: rp0                  # Enable replication <setname>[/<optionalseedhostlist>]
+    mongodb_replication_replindexprefetch: "all"      # specify index prefetching behavior (if secondary) [none|_id_only|all]
+    mongodb_replication_oplogsize: 1024               # specifies a maximum size in megabytes for the replication operation log
+    mongodb_package: mongodb-org
+    mongodb_version: "3.6"
+    mongodb_security_authorization: "enabled"
+    mongodb_set_parameters: { "enableLocalhostAuthBypass": "true", "authenticationMechanisms": "SCRAM-SHA-1,MONGODB-CR" }
+    mongodb_user_admin_name: siteUserAdmin
+    mongodb_user_admin_password: passw0rd
+    mongodb_root_admin_name: siteRootAdmin
+    mongodb_root_admin_password: passw0rd
+    mongodb_net_bindip: 0.0.0.0
+    mongodb_login_host: 192.168.100.5

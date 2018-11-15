@@ -1,0 +1,41 @@
+#4. prepearing droplets
+- hosts: do_droplets
+  gather_facts: no
+  become: no
+  roles:
+    - { role: python-raw }
+
+- hosts: do_droplets
+  become: no
+  gather_facts: true
+  tasks:
+    - name: Get local machine's IP address
+      set_fact:
+        local_machine_ip: "{{ ansible_env['SSH_CLIENT'].split() | first }}"
+      changed_when: false
+  vars:
+    - ansible_python_interpreter: /usr/bin/python3
+
+#5. configre droplets - swapfile,fail2ban,ufw,ntp,create user, upgrades,sshd
+- hosts: do_droplets
+  become: no
+  gather_facts: true
+  roles:
+    - { role: swapfile, tags: [swapfile] }
+    - { role: fail2ban, tags: [fail2ban] }
+    - { role: ufw, tags: [ufw] }
+    - { role: ntp, tags: [ntp] }
+    - { role: users, tags: [users] }
+    - { role: unattended-upgrades, tags: [unattended-upgrades] }
+    - { role: sshd, tags: [sshd] }
+  vars:
+    - ansible_python_interpreter: /usr/bin/python3
+    - fail2ban_ip_whitelist: "{{ local_machine_ip }}/8"
+
+#6. install and configure mongodb
+- hosts: do_droplets
+  become: no
+  gather_facts: true
+  roles:
+    - mongodb
+

@@ -1,0 +1,7 @@
+[mongo_master]
+mongo-test1 mongodb_master=True 
+[mongo_replicas:children]
+do_droplets
+[mongo:children]
+mongo_master
+mongo_replicas

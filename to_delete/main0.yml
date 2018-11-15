@@ -1,0 +1,10 @@
+- hosts: ubuntu3
+  vars:
+    mongodb_type:	"daemon"
+    app_users:
+      - { db_name: "", user: "", pwd: "", roles: ["readWrite", "userAdmin"] } 
+  roles:
+    - { role: pgkehle.mongodb, flags: ['init'] }        
+    - { role: pgkehle.mongodb, flags: ['config_save'] }        
+    - { role: pgkehle.mongodb, flags: ['rs_init'] }        
+    - { role: pgkehle.mongodb, flags: ['storage_init'] }        

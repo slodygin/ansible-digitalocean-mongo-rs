@@ -1,0 +1,10 @@
+---
+- hosts: test-droplet
+  become: yes
+  gather_facts: true
+  roles:
+    - { role: ufw, tags: [ufw] }
+  vars:
+    - ansible_python_interpreter: /usr/bin/python3
+    - local_machine_ip: 178.128.121.23
+    - fail2ban_ip_whitelist: "{{ local_machine_ip }}/8"
