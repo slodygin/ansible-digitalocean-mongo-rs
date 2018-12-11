@@ -9,7 +9,9 @@ This is extended script. Source is here
 Ansible >= 2.4.0.0
 
 ## Usage
-
+0) Ssh public key  from your DigitalOcean (Security >SSH Key) will be added to new droplets. 
+You should use this key for authentification.
+ 
 1) Clone this repo:
 ```
 git clone https://github.com/slodygin/ansible-digitalocean-mongo-rs.git
@@ -54,6 +56,7 @@ or
 service mongod stop
 ```
 4)you should see all exceptions during failover
+
 5) on mongo-test1 restore access
 ``` 
 iptables -D INPUT -p tcp --dport 27017 -j REJECT

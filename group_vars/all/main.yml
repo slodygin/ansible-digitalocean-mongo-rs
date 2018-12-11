@@ -27,17 +27,21 @@ sshd:
   PasswordAuthentication: no
 
 ufw_rules:
-  - ufw_default_input_policy: DROP
-  - ufw_default_output_policy: ACCEPT
-  - ufw_default_forward_policy: DROP
-  - { port: 22, rule: allow, from_ip: '91.122.169.233', comment: 'Allow to ssh from our ip1' }
+  - { port: 22, rule: allow, from_ip: '142.93.100.241', comment: 'Allow to ssh from our ip1' }
   - { port: 22, rule: allow, from_ip: '127.0.0.2', comment: 'Allow to ssh from our ip2' }
   - { port: 22, rule: allow, from_ip: '127.0.0.2/8', comment: 'Allow to ssh from our network' }
-  - { port: 27017, rule: allow, from_ip: '91.122.169.233', comment: 'Allow to mongo from our ip1' }
+  - { port: 27017, rule: allow, from_ip: '142.93.100.241', comment: 'Allow to mongo from our ip1' }
+  - { port: 27017, rule: allow, from_ip: "{{ hostvars[groups['do_droplet_in_memory'][0]].ansible_eth0.ipv4.address }}", comment: 'Allow to mongo from our ip1' }
+  - { port: 27017, rule: allow, from_ip: "{{ hostvars[groups['do_droplet_in_memory'][1]].ansible_eth0.ipv4.address }}", comment: 'Allow to mongo from our ip1' }
+  - { port: 27017, rule: allow, from_ip: "{{ hostvars[groups['do_droplet_in_memory'][2]].ansible_eth0.ipv4.address }}", comment: 'Allow to mongo from our ip1' }
   - { port: 27017, rule: allow, from_ip: '127.0.0.2', comment: 'Allow to mongo from our ip2' }
   - { port: 27017, rule: allow, from_ip: '127.0.0.2/8', comment: 'Allow to mongo from our network' }
   - { from_ip: '127.0.0.1/8', comment: 'Allow localhost' }
   - { from_ip: '127.0.42.0/24', rule: deny }
+ufw_default_input_policy: DROP
+ufw_default_output_policy: ACCEPT
+ufw_default_forward_policy: DROP
+ufw_state: enabled
 ufw_reset: no
 ufw_logging: full
 
